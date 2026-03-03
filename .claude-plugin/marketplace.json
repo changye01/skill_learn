@@ -1,0 +1,30 @@
+{
+  "name": "skill-learn",
+  "description": "实用 Claude Code Skills 集合，包含技术设计文档生成和代码审查清单工具",
+  "owner": {
+    "name": "changye01",
+    "email": ""
+  },
+  "plugins": [
+    {
+      "name": "tech-design-doc",
+      "description": "技术设计文档生成工具，通过引导式提问生成完整的 Markdown 格式设计文档",
+      "version": "1.1.0",
+      "source": "./",
+      "author": {
+        "name": "changye01",
+        "email": ""
+      }
+    },
+    {
+      "name": "code-review-checklist",
+      "description": "代码审查清单生成工具，通过通用规则+语言专项规则逐项检查代码并输出审查报告",
+      "version": "1.0.0",
+      "source": "./",
+      "author": {
+        "name": "changye01",
+        "email": ""
+      }
+    }
+  ]
+}
