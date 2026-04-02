@@ -1,2 +1,2 @@
-用例编号,模块,场景组,用例标题,关联需求点,前置条件,测试步骤,预期结果,优先级,备注
-TC-001,{{MODULE}},{{SCENE_GROUP}},{{CASE_TITLE}},{{REQUIREMENT_POINT}},{{PRECONDITION}},"{{STEPS}}","{{EXPECTED_RESULT}}",{{PRIORITY}},{{NOTES}}
+编号,测试功能点,前置条件,测试步骤,预期结果
+TC-001,{{TEST_POINT}},{{PRECONDITION}},"{{STEPS}}","{{EXPECTED_RESULT}}"

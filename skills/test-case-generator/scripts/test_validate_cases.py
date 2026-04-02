@@ -25,20 +25,11 @@ class TestValidCases:
         content = """\
 # 订单管理测试用例
 
-需求名称: M4X 订单管理需求 26668
-
 ## 结构化测试用例
 
-### TC-001
-- 用例编号: TC-001
-- 模块: 订单管理
-- 场景组: 综合场景
-- 用例标题: 完整流程验证
-- 关联需求点: 分配采购员
-- 前置条件: 存在可操作订单
-- 测试步骤: 进入列表并修改采购员
-- 预期结果: 修改成功且日志正确
-- 优先级: P1
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 综合场景：完整流程验证 | 存在可操作订单 | 进入列表并修改采购员 | 修改成功且日志正确 |
 """
         result = validate(tmp_cases(content))
         assert result["issues"] == []
@@ -50,23 +41,18 @@ class TestMissingFields:
 
     def test_missing_expected_result(self, tmp_cases):
         content = """\
-需求名称: 示例需求
-- 场景组: 综合场景
-- 关联需求点: 查询条件
-- 测试步骤: 输入账号搜索
-- 优先级: P1
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 |
+| --- | --- | --- | --- |
+| TC-001 | 综合场景：查询条件 | 已存在测试数据 | 输入账号搜索 |
 """
         result = validate(tmp_cases(content))
         assert any("预期结果" in issue for issue in result["issues"])
 
     def test_missing_end_to_end_group(self, tmp_cases):
         content = """\
-需求名称: 示例需求
-- 场景组: 查询条件
-- 关联需求点: 查询条件
-- 测试步骤: 输入账号搜索
-- 预期结果: 返回匹配数据
-- 优先级: P1
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 查询条件 | 已存在测试数据 | 输入账号搜索 | 返回匹配数据 |
 """
         result = validate(tmp_cases(content))
         assert result["has_e2e"] is False
