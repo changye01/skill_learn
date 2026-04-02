@@ -101,6 +101,39 @@ test-case-generator/
 
 ## 使用方式
 
+### 推荐输入格式
+
+建议按以下优先级提供需求材料：
+
+1. `Markdown (.md)`
+2. `UTF-8 纯文本 (.txt)`
+3. `Word (.docx)`，建议先转 `Markdown`
+4. `PDF`
+
+说明：
+
+- `Markdown` 最适合 AI 直接读取结构，标题、列表、表格更稳定。
+- `docx` 可用，但复杂排版、表格和批注可能影响解析质量。
+- `pdf` 可直接使用，但容易出现换行错乱、表格断裂、页眉页脚混入正文等问题。
+
+### docx 转 Markdown
+
+如果输入是 `Word (.docx)`，推荐先用 `pandoc` 转成 `Markdown` 再交给本 Skill：
+
+```bash
+cd "/Users/changye/changye_workspace/changye/skill_learn/example_data"
+pandoc "2026-03-17=_【采购-订单模块】M4X订单管理：查询条件及列表字段调整、新增分配采购员功能.docx" \
+  -t gfm \
+  --extract-media=. \
+  -o "需求提取_26668.md"
+```
+
+说明：
+
+- `-t gfm` 会输出更适合 Markdown 工作流的格式。
+- `--extract-media=.` 会把文档中的图片抽取到当前目录下的 `media/` 子目录，并在 Markdown 中保留相对引用。
+- 转换完成后，建议人工检查标题层级、表格、编号和图片路径是否正常。
+
 建议输入顺序：
 
 1. 需求文档
