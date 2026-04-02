@@ -1,6 +1,6 @@
 # Skill Learn
 
-实用 Claude Code Skills 集合。
+实用 Claude Code Skills 集合，当前包含一个面向需求文档的测试用例生成 Skill。
 
 ## 安装
 
@@ -24,30 +24,21 @@
 npx skills add changye01/skill_learn -y -g
 ```
 
-## 包含的 Skills
+## 当前包含的 Skill
 
-### 1. tech-design-doc
+### test-case-generator
 
-技术设计文档生成工具，通过引导式提问生成完整的 Markdown 格式设计文档。
+测试用例生成工具，基于需求文档先生成场景地图，再生成结构化测试用例。
 
-**触发方式：** 说"写设计文档"、"技术方案"、"TDD"
-
-**功能：**
-- 引导式提问，逐步完善设计文档
-- 自动生成包含背景、方案设计、接口定义、实现计划的完整文档
-- 内置验证脚本检查文档完整性
-
-### 2. code-review-checklist
-
-代码审查清单生成工具，通过通用规则 + 语言专项规则逐项检查代码。
-
-**触发方式：** 说"code review"、"代码审查"、"审查清单"
+**触发方式：** 说“生成测试用例”、“测试场景梳理”、“需求转测试用例”等
 
 **功能：**
-- 6 项通用审查规则（命名、错误处理、安全性、可读性、DRY、边界情况）
-- Python 专项规则（PEP 8、类型提示、异常处理、Pythonic 写法）
-- 输出 Markdown 格式审查报告
-- 内置验证脚本检查清单完整性
+- 先生成 Markdown 场景地图，明确“测什么”
+- 在确认场景地图后生成结构化测试用例，明确“怎么测”
+- 默认以“覆盖全面”为目标，同时控制重复和机械膨胀
+- 内置验证脚本检查结构化测试用例文档完整性
+
+> 当前仓库只保留 `test-case-generator`。后续会继续增加新的 Skills。
 
 ---
 
@@ -58,12 +49,7 @@ skill_learn/
 ├── .claude-plugin/              # Claude Code plugin 配置
 ├── .cursor-plugin/              # Cursor plugin 配置
 ├── skills/
-│   ├── tech-design-doc/         # 技术设计文档 Skill
-│   │   ├── SKILL.md
-│   │   ├── scripts/
-│   │   ├── references/
-│   │   └── assets/
-│   └── code-review-checklist/   # 代码审查清单 Skill
+│   └── test-case-generator/     # 测试用例生成 Skill
 │       ├── SKILL.md
 │       ├── scripts/
 │       ├── references/

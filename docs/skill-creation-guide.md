@@ -56,8 +56,8 @@ Skill 的核心文件，分为两部分：
 **Frontmatter（YAML 元数据）**
 ```yaml
 ---
-name: tech-design-doc
-description: 技术设计文档生成工具。用于：(1) 新功能开发前的方案设计 (2) 通过引导式提问生成完整设计文档 (3) 输出 Markdown 格式。当用户说"写设计文档"、"TDD"、"技术方案"时触发。
+name: my-skill
+description: 我的 Skill 描述。用于：(1) 功能一 (2) 功能二。当用户说"关键词"时触发。
 ---
 ```
 
@@ -136,8 +136,8 @@ assets/
 ### 步骤 1：创建目录结构
 
 ```bash
-mkdir -p tech-design-doc/scripts tech-design-doc/references tech-design-doc/assets
-cd tech-design-doc
+mkdir -p my-skill/scripts my-skill/references my-skill/assets
+cd my-skill
 git init
 ```
 
@@ -150,8 +150,8 @@ git init
 
 ```markdown
 ---
-name: tech-design-doc
-description: 技术设计文档生成工具。用于：(1) 新功能开发前的方案设计...
+name: my-skill
+description: 我的 Skill 描述。用于：(1) 功能一 (2) 功能二...
 ---
 
 # 技术设计文档生成器
@@ -266,7 +266,7 @@ my-skills/
 │   └── marketplace.json    # 新增
 ├── README.md
 └── skills/
-    └── tech-design-doc/
+    └── my-skill/
 ```
 
 **marketplace.json 内容：**
@@ -282,14 +282,14 @@ my-skills/
   },
   "plugins": [
     {
-      "name": "tech-design-doc",
-      "description": "技术设计文档生成工具",
+      "name": "my-skill",
+      "description": "我的 Skill 描述",
       "version": "1.0.0",
       "source": "./",
       "category": "development",
       "keywords": ["documentation", "design"],
       "skills": [
-        "./skills/tech-design-doc"
+        "./skills/my-skill"
       ]
     }
   ]
@@ -477,12 +477,12 @@ ls .claude/skills/
 ## 附录：完整示例仓库结构
 
 ```
-changye01/tech-design-doc/
+changye01/my-skill/
 ├── .claude-plugin/
 │   └── marketplace.json
 ├── README.md
 └── skills/
-    └── tech-design-doc/
+    └── my-skill/
         ├── SKILL.md
         ├── scripts/
         │   └── validate_doc.py
@@ -497,11 +497,11 @@ changye01/tech-design-doc/
 **安装命令：**
 ```bash
 # Marketplace 方式
-/plugin marketplace add changye01/tech-design-doc
-/plugin install tech-design-doc
+/plugin marketplace add changye01/my-skill
+/plugin install my-skill
 
 # npx 方式
-npx skills add changye01/tech-design-doc -y -g
+npx skills add changye01/my-skill -y -g
 ```
 
 ---

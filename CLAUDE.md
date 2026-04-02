@@ -13,12 +13,7 @@ skill_learn/
 ├── .claude-plugin/            # Claude Code plugin 配置
 ├── .cursor-plugin/            # Cursor plugin 配置
 ├── skills/
-│   ├── tech-design-doc/       # 技术设计文档 Skill
-│   │   ├── SKILL.md
-│   │   ├── scripts/
-│   │   ├── references/
-│   │   └── assets/
-│   └── code-review-checklist/ # 代码审查清单 Skill
+│   └── test-case-generator/   # 测试用例生成 Skill
 │       ├── SKILL.md
 │       ├── scripts/
 │       ├── references/
@@ -43,11 +38,8 @@ skill_learn/
 # 激活虚拟环境
 source .venv/bin/activate
 
-# 验证技术设计文档完整性
-python skills/tech-design-doc/scripts/validate_doc.py <文档路径>
-
-# 验证代码审查清单完整性
-python skills/code-review-checklist/scripts/validate_review.py <清单路径>
+# 验证结构化测试用例完整性
+python skills/test-case-generator/scripts/validate_cases.py <测试用例路径>
 
 # 安装 Skill（全局）
 npx skills add changye01/skill_learn -y -g
