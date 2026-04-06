@@ -9,7 +9,7 @@
     {
       "name": "test-case-generator",
       "description": "测试用例生成工具，基于需求文档先生成场景地图，再生成结构化测试用例",
-      "version": "1.1.0",
+      "version": "1.0.1",
       "source": "./",
       "author": {
         "name": "changye01",
