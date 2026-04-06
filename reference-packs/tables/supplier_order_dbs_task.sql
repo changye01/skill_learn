@@ -1,0 +1,21 @@
+CREATE TABLE `supplier_order_dbs_task` (
+  `sodt_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `trade_order_code` varchar(20) NOT NULL COMMENT '订单系统订单号',
+  `sfc_order_code` varchar(20) NOT NULL COMMENT 'SFC单号',
+  `purchase_job_number` varchar(20) NOT NULL DEFAULT '' COMMENT '当前销售订单采购员工号',
+  `purchase_site_id` varchar(64) NOT NULL DEFAULT '' COMMENT '当前销售订单账号',
+  `carrier_name` varchar(32) NOT NULL COMMENT '承运商名称',
+  `carrier_warehouse_address` varchar(256) NOT NULL COMMENT '承运商仓库地址',
+  `carrier_tracking_number` varchar(64) NOT NULL COMMENT '承运商物流跟踪号',
+  `task_type` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '类型:1-创建；2-取消',
+  `task_status` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '任务状态:1-待处理；2-处理中；3-处理完成；4-失败; 5-po单已生成通知订单失败',
+  `task_err_nums` int(10) unsigned NOT NULL DEFAULT '0' COMMENT '失败次数',
+  `task_message` text NOT NULL COMMENT '任务备注',
+  `is_send_notice` tinyint(4) NOT NULL DEFAULT '1' COMMENT '是否已发送通知：1-是；0-否',
+  `sodt_create_date` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '创建时间',
+  `sodt_last_update` datetime NOT NULL DEFAULT '0000-00-00 00:00:00' COMMENT '最后更新时间',
+  `carrier_phone_info` varchar(64) NOT NULL DEFAULT '' COMMENT '电话',
+  `carrier_receiver` varchar(64) NOT NULL DEFAULT '' COMMENT '承运商收货人',
+  PRIMARY KEY (`sodt_id`),
+  KEY `idx_trade_order_code` (`trade_order_code`)
+) ENGINE=InnoDB AUTO_INCREMENT=1137 DEFAULT CHARSET=utf8 COMMENT='DBS订单通知创建/取消采购单任务表';

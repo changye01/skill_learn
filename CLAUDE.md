@@ -13,11 +13,17 @@ skill_learn/
 ├── .claude-plugin/            # Claude Code plugin 配置
 ├── .cursor-plugin/            # Cursor plugin 配置
 ├── skills/
-│   └── test-case-generator/   # 测试用例生成 Skill
+│   ├── test-case-generator/   # 测试用例生成 Skill
+│   │   ├── SKILL.md
+│   │   ├── scripts/
+│   │   ├── references/
+│   │   └── assets/
+│   └── test-data-generator/   # 测试数据设计 Skill
 │       ├── SKILL.md
 │       ├── scripts/
 │       ├── references/
 │       └── assets/
+├── reference-packs/           # 表结构与样例数据参考包
 ├── docs/plans/                # 设计和实现计划文档
 └── .venv/                     # Python 虚拟环境 (Python 3.14)
 ```
@@ -40,6 +46,9 @@ source .venv/bin/activate
 
 # 验证结构化测试用例完整性
 python skills/test-case-generator/scripts/validate_cases.py <测试用例路径>
+
+# 验证测试数据设计完整性
+python skills/test-data-generator/scripts/validate_test_data.py <测试数据设计路径>
 
 # 安装 Skill（全局）
 npx skills add changye01/skill_learn -y -g
