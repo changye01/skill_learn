@@ -18,6 +18,21 @@ def tmp_cases(tmp_path):
     return _create
 
 
+@pytest.fixture
+def tmp_case_bundle(tmp_path):
+    """创建 Markdown + CSV 配套输出"""
+
+    def _create(md_content: str, csv_content: str | None = None) -> tuple[str, str]:
+        md_path = tmp_path / "cases.md"
+        csv_path = tmp_path / "cases.csv"
+        md_path.write_text(md_content, encoding="utf-8")
+        if csv_content is not None:
+            csv_path.write_text(csv_content, encoding="utf-8")
+        return str(md_path), str(csv_path)
+
+    return _create
+
+
 class TestValidCases:
     """结构完整的测试用例文档"""
 
@@ -34,6 +49,41 @@ class TestValidCases:
         result = validate(tmp_cases(content))
         assert result["issues"] == []
         assert result["has_e2e"]
+
+    def test_valid_document_with_matching_csv(self, tmp_case_bundle):
+        md_content = """\
+# 订单管理测试用例
+
+## 结构化测试用例
+
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 综合场景：完整流程验证 | 存在可操作订单 | 进入列表并修改采购员 | 修改成功且日志正确 |
+"""
+        csv_content = """\
+编号,测试功能点,前置条件,测试步骤,预期结果
+TC-001,综合场景：完整流程验证,存在可操作订单,进入列表并修改采购员,修改成功且日志正确
+"""
+        md_path, csv_path = tmp_case_bundle(md_content, csv_content)
+        result = validate(md_path, csv_path)
+        assert result["issues"] == []
+        assert result["has_matching_csv"] is True
+
+    def test_valid_document_with_utf8_bom_csv(self, tmp_case_bundle):
+        md_content = """\
+# 订单管理测试用例
+
+## 结构化测试用例
+
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 综合场景：完整流程验证 | 存在可操作订单 | 进入列表并修改采购员 | 修改成功且日志正确 |
+"""
+        csv_content = "\ufeff编号,测试功能点,前置条件,测试步骤,预期结果\nTC-001,综合场景：完整流程验证,存在可操作订单,进入列表并修改采购员,修改成功且日志正确\n"
+        md_path, csv_path = tmp_case_bundle(md_content, csv_content)
+        result = validate(md_path, csv_path)
+        assert result["issues"] == []
+        assert result["has_matching_csv"] is True
 
 
 class TestMissingFields:
@@ -57,6 +107,42 @@ class TestMissingFields:
         result = validate(tmp_cases(content))
         assert result["has_e2e"] is False
         assert any("综合场景" in issue or "端到端" in issue for issue in result["issues"])
+
+    def test_csv_header_mismatch(self, tmp_case_bundle):
+        md_content = """\
+# 订单管理测试用例
+
+## 结构化测试用例
+
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 综合场景：完整流程验证 | 存在可操作订单 | 进入列表并修改采购员 | 修改成功且日志正确 |
+"""
+        csv_content = """\
+编号,测试功能点,测试步骤,预期结果
+TC-001,综合场景：完整流程验证,进入列表并修改采购员,修改成功且日志正确
+"""
+        md_path, csv_path = tmp_case_bundle(md_content, csv_content)
+        result = validate(md_path, csv_path)
+        assert any("CSV" in issue and "列头" in issue for issue in result["issues"])
+
+    def test_csv_case_id_mismatch(self, tmp_case_bundle):
+        md_content = """\
+# 订单管理测试用例
+
+## 结构化测试用例
+
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 综合场景：完整流程验证 | 存在可操作订单 | 进入列表并修改采购员 | 修改成功且日志正确 |
+"""
+        csv_content = """\
+编号,测试功能点,前置条件,测试步骤,预期结果
+TC-002,综合场景：完整流程验证,存在可操作订单,进入列表并修改采购员,修改成功且日志正确
+"""
+        md_path, csv_path = tmp_case_bundle(md_content, csv_content)
+        result = validate(md_path, csv_path)
+        assert any("编号集合" in issue for issue in result["issues"])
 
 
 class TestFileErrors:
