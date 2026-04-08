@@ -1,0 +1,2 @@
+测试用例编号,测试功能点,数据目标,涉及表,关键字段,建议数据值,样例来源,数据准备方式,验证方式,备注/待确认项
+{{CASE_ID}},{{TEST_POINT}},{{DATA_GOAL}},{{TABLES}},{{KEY_FIELDS}},{{SUGGESTED_VALUE}},{{SOURCE_PATH}},{{PREPARE_METHOD}},{{VERIFY_METHOD}},{{NOTES}}
