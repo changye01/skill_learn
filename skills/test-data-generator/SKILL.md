@@ -15,17 +15,16 @@ description: Use when 需要根据已确认的测试用例和 reference-pack 设
 6. **输出 Markdown 测试数据清单草稿** - 基于 `assets/test-data-template.md` 在对话中先输出 `测试数据清单.md` 草稿，默认采用“基础记录池 + 用例引用/增量 + 待确认项”的结构。
 7. **覆盖检查与补漏** - 读取 `references/data-coverage-checklist.md` 检查是否覆盖正常、边界、异常、缺失、历史修复、派生字段、状态映射和多表关联等关键维度。
 8. **沉淀待确认项** - 对无法从测试用例和 reference-pack 可靠得出的规则，单独输出为 `待确认项`；禁止直接脑补成确定规则。
-9. **保存确认版 Markdown** - 用户确认后，再将结果保存为独立 Markdown 文件；保存时必须覆盖目标文件，不得把旧草稿追加到确认版文件中。
-10. **验证 Markdown 完整性** - 运行 `scripts/validate_test_data.py` 检查 Markdown 是否符合规范。脚本兼容旧版表格稿，也支持新版 `测试数据清单.md`。
-11. **按需派生测试数据清单 CSV** - 如果用户明确需要 CSV，再基于 `assets/test-data-checklist-template.csv` 从确认版 Markdown 派生一份给测试人员直接使用的 `测试数据清单.csv`，重点说明“准备什么数据、怎么准备、怎么验证”。
-12. **验证 Markdown 与 CSV 一致性** - 运行 `scripts/validate_test_data.py <Markdown文件> <测试数据清单CSV>`，检查 CSV 列头是否符合规范，以及测试用例编号集合和顺序是否与 Markdown 一致。
+9. **保存候选版 Markdown** - 用户确认草稿方向后，再将结果保存为独立 Markdown 文件；保存时必须覆盖目标文件，不得把旧草稿追加到候选版文件中。
+10. **验证 Markdown 完整性** - 运行 `scripts/validate_test_data.py` 检查 `测试数据清单.md` 是否符合规范。
+11. **校验失败则回改 Markdown 并重新校验** - 如果校验未通过，必须先回改同一份 Markdown，再重新运行校验；只有校验通过后，这份 Markdown 才能视为确认版。
 
 ## 默认策略
 
 - 默认输入优先级为：`测试用例 > reference-pack > 技术方案`
 - 默认把技术方案视为`补充参考`，不是必需主输入
-- 默认正式输出优先是 `测试数据清单.md`
-- 默认先给 Markdown 确认版，再按需派生一份测试人员可直接使用的 CSV 测试数据清单
+- 默认正式输出就是 `测试数据清单.md`
+- 默认先给 Markdown 草稿，保存候选版并完成校验，通过后才算确认版
 - 默认保留 `待确认项`，不把推断内容伪装成确定规则
 - 默认优先复用 `reference-pack/table_samples/*.csv` 中已存在的数据形态
 - 默认优先抽取“基础记录池”，用“引用基础记录”替代大段重复实例
@@ -39,7 +38,7 @@ description: Use when 需要根据已确认的测试用例和 reference-pack 设
 - 请提供测试用例路径。
 - 请提供对应的 `reference-pack` 路径。
 - 是否还有技术方案、接口说明、状态映射说明或修复 SQL 可一起参考？
-- 默认优先使用 `Markdown (.md)` 作为测试用例输入；`CSV` 可作为补充或备选。
+- 默认优先使用 `Markdown (.md)` 作为测试用例输入。
 
 ### 第 2 步：识别补充材料需求
 
@@ -62,7 +61,8 @@ description: Use when 需要根据已确认的测试用例和 reference-pack 设
 
 - 必须先在对话中给出 Markdown 草稿，供用户审阅
 - 用户未确认前，不得保存正式文件
-- 用户确认后，才保存为独立 Markdown 文件
+- 用户确认草稿方向后，可保存候选版 Markdown
+- 只有候选版通过校验后，才可视为正式确认版
 - 推荐优先使用“基础记录池 + 用例引用/增量”的压缩写法
 - 每条测试用例下应尽量只保留：
   - 引用哪些基础记录
@@ -72,53 +72,27 @@ description: Use when 需要根据已确认的测试用例和 reference-pack 设
 - 若技术方案缺失但规则依赖强，应显式提示“建议补充技术方案作为参考”
 - 推荐文件名：`<需求名称>_测试数据清单.md`
 
-### 测试数据清单 CSV
-
-在确认版 Markdown 通过校验后，如用户明确需要，再派生一份 CSV 清单，供测试人员直接阅读和使用。
-
-CSV 必须包含：
-
-- 测试用例编号
-- 测试功能点
-- 数据目标
-- 涉及表
-- 关键字段
-- 建议数据值
-- 样例来源
-- 数据准备方式
-- 验证方式
-- 备注/待确认项
-
-CSV 输出要求：
-
-- 使用 UTF-8 编码（建议 UTF-8 with BOM）
-- 使用中文列名
-- 每一行尽量可独立理解，不依赖额外 manifest 或程序上下文
-- `验证方式` 必须直接说明测试人员如何使用该条数据验证对应测试用例
-- 对于待确认项，不进入正式 CSV，只保留在 Markdown
-- 推荐文件名：`<需求名称>_测试数据清单.csv`
-
 ## 资源
 
 - **测试数据设计规则**: 见 `references/data-design-rules.md`
 - **覆盖检查清单**: 见 `references/data-coverage-checklist.md`
 - **测试数据模板**: 见 `assets/test-data-template.md`
-- **测试数据清单模板**: 见 `assets/test-data-checklist-template.csv`
-- **测试数据清单规范**: 见 `references/csv-checklist-spec.md`
 
 ## 验证
 
 生成 Markdown 后，运行：
 
 ```bash
-python scripts/validate_test_data.py <Markdown文件路径> [测试数据清单CSV路径]
+python scripts/validate_test_data.py <Markdown文件路径>
 ```
 
-如果只传 Markdown，脚本会检查结构是否完整：
+脚本会检查新版 `测试数据清单.md` 的结构是否完整：
 
-- 旧版表格稿：检查关键字段和至少一条数据设计记录
-- 新版清单稿：检查 `基础记录池`、`测试用例清单`、`引用基础记录`、`验证点`、`待确认项`，以及至少一条 `TC-xxx`
+- 是否包含 `基础记录池`
+- 是否包含 `测试用例清单`
+- 是否包含 `引用基础记录`
+- 是否包含 `验证点`
+- 是否包含 `待确认项`
+- 是否至少包含一条 `TC-xxx`
 
-如果同时传入 CSV，还会检查测试用例编号集合/顺序和清单列头是否符合规范。
-
-如果提示缺少关键字段、缺少数据设计记录、CSV 列头不一致或测试用例编号不一致，根据提示补充；如果材料不足以支撑确定性设计，应补充到 `待确认项`，而不是直接编造。
+如果提示缺少必要小节或缺少 `TC-xxx`，必须先回改 Markdown，再重新运行校验，直到通过为止；如果材料不足以支撑确定性设计，应补充到 `待确认项`，而不是直接编造。

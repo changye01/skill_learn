@@ -43,6 +43,7 @@ claude plugins marketplace remove "skill-learn"
 **触发方式：** 说“生成测试用例”、“测试场景梳理”、“需求转测试用例”等
 
 **功能：**
+
 - 先生成 Markdown 场景地图，明确“测什么”
 - 在确认场景地图后生成结构化测试用例，明确“怎么测”
 - 默认以“覆盖全面”为目标，同时控制重复和机械膨胀
@@ -50,15 +51,15 @@ claude plugins marketplace remove "skill-learn"
 
 ### `test-data-generator`
 
-测试数据设计工具，基于已确认测试用例与 `reference-pack` 设计测试数据清单，并支持校验 Markdown 与 CSV 一致性。
+测试数据设计工具，基于已确认测试用例与 `reference-pack` 设计测试数据清单，并校验 Markdown 结构完整性。
 
 **触发方式：** 说“生成测试数据清单”、“补齐测试前置数据”、“根据测试用例设计测试数据”等
 
 **功能：**
+
 - 优先收敛可复用基础记录池，减少重复准备
 - 输出测试数据清单草稿，区分基础数据、增量数据和待确认项
-- 可按需派生测试人员可直接使用的 CSV 清单
-- 内置验证脚本检查 Markdown 结构及 Markdown/CSV 一致性
+- 内置验证脚本检查 Markdown 结构完整性
 
 ## 使用示例
 
@@ -72,7 +73,7 @@ claude plugins marketplace remove "skill-learn"
 
 - “根据已确认测试用例生成测试数据清单”
 - “基于 reference-pack 设计测试前置数据”
-- “输出测试数据清单并校验 Markdown 和 CSV 是否一致”
+- “输出测试数据清单并校验 Markdown 结构是否完整”
 
 ---
 
@@ -100,13 +101,15 @@ skill_learn/
 
 每个 Skill 遵循统一的组件结构：
 
-| 组件 | 用途 | 加载时机 |
-|------|------|----------|
-| SKILL.md frontmatter | 触发条件 | 始终在上下文 (~100 tokens) |
-| SKILL.md body | 工作流程指令 | 触发后加载 (<5k tokens) |
-| scripts/ | 确定性执行任务 | 执行时运行，不读入上下文 |
-| references/ | 详细参考资料 | 按需读取 |
-| assets/ | 模板和示例 | 复制/修改使用 |
+
+| 组件                   | 用途      | 加载时机                 |
+| -------------------- | ------- | -------------------- |
+| SKILL.md frontmatter | 触发条件    | 始终在上下文 (~100 tokens) |
+| SKILL.md body        | 工作流程指令  | 触发后加载 (<5k tokens)   |
+| scripts/             | 确定性执行任务 | 执行时运行，不读入上下文         |
+| references/          | 详细参考资料  | 按需读取                 |
+| assets/              | 模板和示例   | 复制/修改使用              |
+
 
 ## 添加新 Skill
 
