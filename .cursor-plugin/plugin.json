@@ -1,7 +1,7 @@
 {
   "name": "skill-learn",
   "displayName": "Skill Learn",
-  "description": "实用 Claude Code Skills 集合，当前包含测试用例生成工具",
+  "description": "实用 Claude Code Skills 集合，当前包含测试用例生成与测试数据设计工具",
   "version": "1.1.0",
   "author": {
     "name": "changye01",
@@ -10,6 +10,6 @@
   "homepage": "https://github.com/changye01/skill_learn",
   "repository": "https://github.com/changye01/skill_learn",
   "license": "MIT",
-  "keywords": ["testing", "test-case", "qa", "测试用例", "测试设计"],
+  "keywords": ["testing", "test-case", "test-data", "qa", "测试用例", "测试数据", "测试设计"],
   "skills": "./skills/"
 }
