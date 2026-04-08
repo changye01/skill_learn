@@ -2,7 +2,7 @@
 
 实用 Claude Code Skills 集合，以单个 `skill-learn` 插件提供多个 Claude Skills，目前包含测试用例生成与测试数据设计两个 Skill。
 
-## 安装
+## 插件安装与管理
 
 ### Claude Code Plugin Marketplace（推荐）
 
@@ -13,7 +13,26 @@ claude plugins marketplace add "changye01/skill_learn"
 claude plugins install "skill-learn"
 ```
 
-安装完成后，Claude 会在同一个 `skill-learn` 插件下按需触发以下 Skills。
+更新插件：
+
+```bash
+claude plugins marketplace update "skill-learn"
+claude plugins install "skill-learn"
+```
+
+卸载插件：
+
+```bash
+claude plugins uninstall "skill-learn" --scope user
+```
+
+如需同时移除 marketplace：
+
+```bash
+claude plugins marketplace remove "skill-learn"
+```
+
+安装完成后，Claude 会在同一个 `skill-learn` 插件下按需触发以下两个 Skills。
 
 ## 当前包含的 Skills
 
@@ -40,6 +59,20 @@ claude plugins install "skill-learn"
 - 输出测试数据清单草稿，区分基础数据、增量数据和待确认项
 - 可按需派生测试人员可直接使用的 CSV 清单
 - 内置验证脚本检查 Markdown 结构及 Markdown/CSV 一致性
+
+## 使用示例
+
+### `test-case-generator`
+
+- “请根据这个需求文档生成测试场景地图”
+- “把这份需求拆成结构化测试用例”
+- “补齐这批测试用例的边界和异常场景”
+
+### `test-data-generator`
+
+- “根据已确认测试用例生成测试数据清单”
+- “基于 reference-pack 设计测试前置数据”
+- “输出测试数据清单并校验 Markdown 和 CSV 是否一致”
 
 ---
 
