@@ -1,32 +1,23 @@
 # Skill Learn
 
-实用 Claude Code Skills 集合，当前包含一个面向需求文档的测试用例生成 Skill。
+实用 Claude Code Skills 集合，以单个 `skill-learn` 插件提供多个 Claude Skills，目前包含测试用例生成与测试数据设计两个 Skill。
 
 ## 安装
 
-### 方式 1：Plugin Marketplace（推荐）
+### Claude Code Plugin Marketplace（推荐）
 
 在 Claude Code 中运行：
 
-```
-/plugin marketplace add changye01/skill_learn
-```
-
-安装后启用：
-
-```
-/plugin install skill-learn@changye01
-```
-
-### 方式 2：npx
-
 ```bash
-npx skills add changye01/skill_learn -y -g
+claude plugins marketplace add "changye01/skill_learn"
+claude plugins install "skill-learn"
 ```
 
-## 当前包含的 Skill
+安装完成后，Claude 会在同一个 `skill-learn` 插件下按需触发以下 Skills。
 
-### test-case-generator
+## 当前包含的 Skills
+
+### `test-case-generator`
 
 测试用例生成工具，基于需求文档先生成场景地图，再生成结构化测试用例。
 
@@ -38,22 +29,37 @@ npx skills add changye01/skill_learn -y -g
 - 默认以“覆盖全面”为目标，同时控制重复和机械膨胀
 - 内置验证脚本检查结构化测试用例文档完整性
 
-> 当前仓库只保留 `test-case-generator`。后续会继续增加新的 Skills。
+### `test-data-generator`
+
+测试数据设计工具，基于已确认测试用例与 `reference-pack` 设计测试数据清单，并支持校验 Markdown 与 CSV 一致性。
+
+**触发方式：** 说“生成测试数据清单”、“补齐测试前置数据”、“根据测试用例设计测试数据”等
+
+**功能：**
+- 优先收敛可复用基础记录池，减少重复准备
+- 输出测试数据清单草稿，区分基础数据、增量数据和待确认项
+- 可按需派生测试人员可直接使用的 CSV 清单
+- 内置验证脚本检查 Markdown 结构及 Markdown/CSV 一致性
 
 ---
 
 ## 项目结构
 
-```
+```text
 skill_learn/
-├── .claude-plugin/              # Claude Code plugin 配置
-├── .cursor-plugin/              # Cursor plugin 配置
+├── .claude-plugin/              # Claude Code marketplace 与 plugin 配置
 ├── skills/
-│   └── test-case-generator/     # 测试用例生成 Skill
+│   ├── test-case-generator/     # 测试用例生成 Skill
+│   │   ├── SKILL.md
+│   │   ├── scripts/
+│   │   ├── references/
+│   │   └── assets/
+│   └── test-data-generator/     # 测试数据设计 Skill
 │       ├── SKILL.md
 │       ├── scripts/
 │       ├── references/
 │       └── assets/
+├── reference-packs/             # 表结构与样例数据参考包
 └── docs/                        # 设计文档和计划
 ```
 
@@ -74,7 +80,7 @@ skill_learn/
 1. 在 `skills/` 目录下创建新目录
 2. 添加 `SKILL.md` 文件（必需）
 3. 根据需要添加 scripts/、references/、assets/
-4. 在 `.claude-plugin/marketplace.json` 的 plugins 数组中添加条目
+4. 如需修改插件元信息，更新 `/.claude-plugin/plugin.json`
 5. 提交并推送
 
 ## 许可

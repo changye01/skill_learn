@@ -10,8 +10,7 @@ Claude Code Skills 集合项目，用于创建和管理自定义 Skills。Skills
 
 ```
 skill_learn/
-├── .claude-plugin/            # Claude Code plugin 配置
-├── .cursor-plugin/            # Cursor plugin 配置
+├── .claude-plugin/            # Claude Code marketplace 与 plugin 配置
 ├── skills/
 │   ├── test-case-generator/   # 测试用例生成 Skill
 │   │   ├── SKILL.md
@@ -50,8 +49,9 @@ python skills/test-case-generator/scripts/validate_cases.py <测试用例路径>
 # 验证测试数据设计完整性（可选同时校验 CSV 清单）
 python skills/test-data-generator/scripts/validate_test_data.py <测试数据设计路径> [测试数据清单路径]
 
-# 安装 Skill（全局）
-npx skills add changye01/skill_learn -y -g
+# 安装插件
+claude plugins marketplace add "changye01/skill_learn"
+claude plugins install "skill-learn"
 ```
 
 ## 添加新 Skill
@@ -59,7 +59,7 @@ npx skills add changye01/skill_learn -y -g
 1. 在 `skills/` 目录下创建新目录
 2. 添加 `SKILL.md` 文件，包含 YAML frontmatter（name + description）
 3. 根据需要添加 scripts/、references/、assets/ 子目录
-4. 在 `.claude-plugin/marketplace.json` 中添加 plugin 条目
+4. 如需修改插件元信息，更新 `/.claude-plugin/plugin.json`
 5. 提交并推送
 
 ## 语言偏好

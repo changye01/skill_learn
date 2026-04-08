@@ -10,24 +10,11 @@
   },
   "plugins": [
     {
-      "name": "test-case-generator",
-      "description": "测试用例生成工具，基于需求文档先生成场景地图，再生成结构化测试用例",
-      "version": "1.0.1",
+      "name": "skill-learn",
+      "description": "实用 Claude Code Skills 集合，提供测试用例生成与测试数据设计两个 Skill",
+      "version": "1.1.0",
       "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/test-case-generator"
-      ]
-    },
-    {
-      "name": "test-data-generator",
-      "description": "测试数据设计工具，基于已确认测试用例与 reference-pack 输出测试数据设计和结构校验",
-      "version": "1.0.0",
-      "source": "./",
-      "strict": false,
-      "skills": [
-        "./skills/test-data-generator"
-      ]
+      "strict": false
     }
   ]
 }
