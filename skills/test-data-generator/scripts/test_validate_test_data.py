@@ -65,6 +65,114 @@ class TestValidExecutionChecklist:
         assert result["issues"] == []
         assert result["has_cases"] is True
 
+    def test_valid_grouped_execution_checklist(self, tmp_execution_plan):
+        content = """\
+# 订单管理测试执行清单
+
+## 输入材料
+
+- 结构化测试用例：`cases.md`
+- reference-pack：`reference-packs/`
+
+## 场景组1：账号查询条件
+
+### TC-001 账号查询命中订单
+
+#### 前置条件
+- 已存在账号为 `acct_001` 的订单
+
+#### 测试步骤
+1. 进入订单管理页面
+2. 输入账号 `acct_001`
+3. 点击查询
+
+#### 预期结果
+- 返回目标订单
+
+#### 输入数据
+
+##### 表：`supplier_order_m4x_task`
+
+| trade_order_code | purchase_site_id |
+| --- | --- |
+| ORD-001 | acct_001 |
+
+##### 表：`orders`
+
+| orders_code | site_id | orders_status |
+| --- | --- | --- |
+| ORD-001 | acct_001 | OP |
+
+#### 说明
+- `supplier_order_m4x_task.trade_order_code = orders.orders_code`
+
+#### 待确认项
+- 无
+"""
+        result = validate(tmp_execution_plan(content))
+        assert result["issues"] == []
+        assert result["has_cases"] is True
+
+    def test_valid_readable_execution_checklist(self, tmp_execution_plan):
+        content = """\
+# 订单管理测试执行清单
+
+## 输入材料
+
+- 结构化测试用例：`cases.md`
+- reference-pack：`reference-packs/`
+
+## 阅读导航
+
+| 场景组 | TC数量 | 重点 |
+| --- | --- | --- |
+| 场景组1：账号查询条件 | 1 | 精确匹配 |
+
+## 场景组1：账号查询条件
+
+> 本组目标：验证账号查询相关规则。
+
+| 编号 | 测试功能点 | 数据重点 |
+| --- | --- | --- |
+| TC-001 | 账号查询命中订单 | `purchase_site_id` |
+
+### TC-001 账号查询命中订单
+
+#### 前置条件
+- 已存在账号为 `acct_001` 的订单
+
+#### 输入数据
+
+##### 表：`supplier_order_m4x_task`（主断言表）
+
+| trade_order_code | purchase_site_id |
+| --- | --- |
+| ORD-001 | acct_001 |
+
+##### 表：`orders`（关联表）
+
+| orders_code | site_id | orders_status |
+| --- | --- | --- |
+| ORD-001 | acct_001 | OP |
+
+#### 测试步骤
+1. 进入订单管理页面
+2. 输入账号 `acct_001`
+3. 点击查询
+
+#### 预期结果
+- 返回目标订单
+
+#### 说明
+- `supplier_order_m4x_task.trade_order_code = orders.orders_code`
+
+#### 待确认项
+- 无
+"""
+        result = validate(tmp_execution_plan(content))
+        assert result["issues"] == []
+        assert result["has_cases"] is True
+
 
 class TestMissingFields:
     def test_old_data_checklist_format_is_rejected(self, tmp_execution_plan):

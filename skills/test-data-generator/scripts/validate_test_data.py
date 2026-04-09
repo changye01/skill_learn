@@ -15,6 +15,8 @@ CASE_REQUIRED_SECTIONS = [
 ]
 
 TITLE_PATTERN = re.compile(r"^#\s+.*测试执行清单\s*$", flags=re.MULTILINE)
+HEADING_PATTERN = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
+CASE_HEADING_PATTERN = re.compile(r"^(#{2,6})\s+(TC-[^\s]+).*$")
 
 def _read_markdown(filepath: str) -> str:
     try:
@@ -25,14 +27,37 @@ def _read_markdown(filepath: str) -> str:
         sys.exit(2)
 
 
-def _split_case_blocks(content: str) -> list[tuple[str, str]]:
-    matches = list(re.finditer(r"^##\s+(TC-[^\s]+).*$", content, flags=re.MULTILINE))
-    blocks = []
+def _parse_heading(line: str) -> tuple[int, str] | None:
+    match = HEADING_PATTERN.match(line.strip())
+    if not match:
+        return None
 
-    for index, match in enumerate(matches):
-        start = match.start()
-        end = matches[index + 1].start() if index + 1 < len(matches) else len(content)
-        blocks.append((match.group(1), content[start:end]))
+    return len(match.group(1)), match.group(2).strip()
+
+
+def _split_case_blocks(content: str) -> list[tuple[str, int, str]]:
+    lines = content.splitlines()
+    matches: list[tuple[int, int, str]] = []
+
+    for index, line in enumerate(lines):
+        match = CASE_HEADING_PATTERN.match(line.strip())
+        if match:
+            matches.append((index, len(match.group(1)), match.group(2)))
+
+    blocks = []
+    for start_index, case_level, case_id in matches:
+        end_index = len(lines)
+
+        for next_index in range(start_index + 1, len(lines)):
+            heading = _parse_heading(lines[next_index])
+            if heading and heading[0] <= case_level:
+                end_index = next_index
+                break
+
+        block = "\n".join(lines[start_index:end_index])
+        if end_index < len(lines):
+            block += "\n"
+        blocks.append((case_id, case_level, block))
 
     return blocks
 
@@ -44,34 +69,48 @@ def _validate_execution_checklist(content: str, issues: list[str]) -> bool:
         issues.append("测试执行清单至少包含一条测试用例记录")
         return has_cases
 
-    for case_id, block in case_blocks:
+    for case_id, case_level, block in case_blocks:
         for section in CASE_REQUIRED_SECTIONS:
-            if f"### {section}" not in block:
+            if not _extract_section(block, section, case_level):
                 issues.append(f"{case_id} 缺少“{section}”小节")
 
-        input_data_section = _extract_section(block, "输入数据")
-        if input_data_section and "#### 表：" not in input_data_section:
-            issues.append(f"{case_id} 的“输入数据”小节缺少按表分块内容")
-        elif input_data_section:
-            _validate_table_blocks(case_id, input_data_section, issues)
+        input_data_section = _extract_section(block, "输入数据", case_level)
+        if input_data_section:
+            if "表：" not in input_data_section:
+                issues.append(f"{case_id} 的“输入数据”小节缺少按表分块内容")
+            else:
+                _validate_table_blocks(case_id, input_data_section, issues)
 
     return has_cases
 
 
-def _extract_section(block: str, section_name: str) -> str:
-    pattern = rf"^###\s+{re.escape(section_name)}\s*$"
-    match = re.search(pattern, block, flags=re.MULTILINE)
-    if not match:
+def _extract_section(block: str, section_name: str, case_level: int) -> str:
+    section_level = case_level + 1
+    lines = block.splitlines()
+    start_index = None
+
+    for index, line in enumerate(lines):
+        heading = _parse_heading(line)
+        if heading == (section_level, section_name):
+            start_index = index + 1
+            break
+
+    if start_index is None:
         return ""
 
-    start = match.end()
-    next_section = re.search(r"^###\s+.+$", block[start:], flags=re.MULTILINE)
-    end = start + next_section.start() if next_section else len(block)
-    return block[start:end]
+    end_index = len(lines)
+    for index in range(start_index, len(lines)):
+        heading = _parse_heading(lines[index])
+        if heading and heading[0] <= section_level:
+            end_index = index
+            break
+
+    section_lines = lines[start_index:end_index]
+    return "\n".join(section_lines).strip()
 
 
 def _validate_table_blocks(case_id: str, input_data_section: str, issues: list[str]) -> None:
-    table_headers = list(re.finditer(r"^####\s+表：.+$", input_data_section, flags=re.MULTILINE))
+    table_headers = list(re.finditer(r"^#{1,6}\s+表：.+$", input_data_section, flags=re.MULTILINE))
 
     for index, header in enumerate(table_headers):
         start = header.end()
