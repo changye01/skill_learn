@@ -51,13 +51,14 @@ claude plugins marketplace remove "skill-learn"
 
 ### `test-data-generator`
 
-测试数据设计工具，基于已确认测试用例与 `reference-pack` 生成 `测试执行清单.md`，并校验 Markdown 结构完整性。
+测试数据设计工具，基于已确认测试用例、技术方案与 `reference-pack` 生成 `测试执行清单.md`，并校验 Markdown 结构完整性。
 
 **触发方式：** 说“生成测试执行清单”、“补齐测试前置数据”、“根据测试用例设计测试数据”等
 
 **功能：**
 
 - 保留 `结构化测试用例.md` 作为基线稿，再按 `TC` 补齐执行信息与测试数据
+- 把技术方案作为规则主输入，用于确认映射、状态、权限、日志和历史修复逻辑
 - 输出 `测试执行清单.md` 草稿，按表分块展示测试数据并保留待确认项
 - 内置验证脚本检查 Markdown 结构完整性
 
@@ -71,8 +72,8 @@ claude plugins marketplace remove "skill-learn"
 
 ### `test-data-generator`
 
-- “根据已确认测试用例生成测试执行清单”
-- “基于 reference-pack 设计测试前置数据”
+- “根据已确认测试用例、技术方案和 reference-pack 生成测试执行清单”
+- “基于技术方案和 reference-pack 设计测试前置数据”
 - “输出测试执行清单并校验 Markdown 结构是否完整”
 
 ### 真实示例
@@ -81,10 +82,10 @@ claude plugins marketplace remove "skill-learn"
 ```text
 在claude中执行 /Users/changye/changye_workspace/changye/skill_learn/example_data/2026-03-17=!【采购-订单模块】M4X订单管理：查询条件及列表字段调整、新增分配采购员功能/2026-03-17=!【采购-订单模块】M4X订单管理：查询条件及列表字段调整、新增分配采购员功能.md 生成测试用例
 ```
-然后基于已确认的结构化测试用例，继续让 Claude 生成测试执行清单：
+然后基于已确认的结构化测试用例、技术方案和 `reference-packs/`，继续让 Claude 生成测试执行清单：
 
 ```text
-根据 `M4X订单管理_结构化测试用例.md` 和 `reference-packs/` 生成测试执行清单
+根据 `M4X订单管理_结构化测试用例.md`、技术方案和 `reference-packs/` 生成测试执行清单
 ```
 
 在这次会话里，完整产出流程是：
@@ -92,7 +93,7 @@ claude plugins marketplace remove "skill-learn"
 1. `test-case-generator` 先读取需求文档，拆出查询条件、列表字段、分配采购员、历史数据修复、日志调整等测试对象
 2. 先生成 `M4X订单管理_测试场景地图.md` 草稿，并把“账号精确匹配”“订单状态枚举值”“采购员范围”“是否允许清空”等问题收敛到 `本次确认规则`
 3. 用户补充并确认规则后，再正式落地结构化测试用例和 CSV
-4. 随后 `test-data-generator` 基于 `M4X订单管理_结构化测试用例.md` 和 `reference-packs/` 继续补齐每条 `TC` 的测试数据、说明和待确认项，输出 `测试执行清单.md`
+4. 随后 `test-data-generator` 基于 `M4X订单管理_结构化测试用例.md`、技术方案和 `reference-packs/` 继续补齐每条 `TC` 的测试数据、说明和待确认项，输出 `测试执行清单.md`
 
 最终在需求文档同目录产出了 4 个文件：
 

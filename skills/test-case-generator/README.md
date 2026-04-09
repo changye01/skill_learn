@@ -142,6 +142,10 @@ test-case-generator/
   第二阶段结构化测试用例 Markdown 模板
 - `assets/test-case-template.csv`
   第二阶段表格版测试用例 CSV 模板
+- `assets/test-case-example.md`
+  第二阶段结构化测试用例示例输出
+- `assets/test-case-example.csv`
+  与示例 Markdown 对齐的 CSV 输出
 
 ## 规则来源
 

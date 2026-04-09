@@ -115,6 +115,8 @@ CSV 输出要求：
 - **场景地图模板**: 见 `assets/scene-template.md`
 - **测试用例模板**: 见 `assets/test-case-template.md`
 - **CSV 模板**: 见 `assets/test-case-template.csv`
+- **测试用例示例**: 见 `assets/test-case-example.md`
+- **CSV 示例**: 见 `assets/test-case-example.csv`
 
 ## 验证
 
