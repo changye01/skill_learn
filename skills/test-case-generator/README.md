@@ -98,19 +98,17 @@
 
 这 5 列就是第二阶段的最终输出模板，贴近日常测试执行习惯。`模块`、`场景组`、`关联需求点`、`优先级` 等信息默认保留在第一阶段场景地图里，不再作为第二阶段默认列。
 
-第二阶段默认双输出：
+第二阶段默认正式输出：
 
 - `结构化测试用例.md`
-- `表格版用例.csv`
 
 推荐文件名：
 
 - `<需求名称>_结构化测试用例.md`
-- `<需求名称>_表格版用例.csv`
 
 第二阶段闭环要求：
 
-- 用户确认第二阶段结果后，必须先保存这两份文件，不能只输出到对话中
+- 用户确认第二阶段结果后，必须先保存这份 Markdown 文件，不能只输出到对话中
 - 保存时应覆盖旧版本，不能把历史草稿追加到确认版文件里
 - 保存后必须立即运行校验脚本
 - 校验通过前，不能视为确认版，也不应直接提示下游 `test-data-generator`
@@ -122,9 +120,7 @@
 原因：
 
 - 更适合保留第一阶段场景地图中的分组语义
-- 更适合和 `CSV` 保持一一对应
 - 更适合人工评审、筛选、对比和补漏
-- 更适合后续导入 Excel 或测试平台
 - 更容易发现缺列、漏列、空字段、重复编号等结构问题
 
 因此建议固定为：
@@ -135,8 +131,6 @@
 具体建议：
 
 - Markdown 中的分组名称与顺序继承第一阶段 `场景分组`
-- CSV 保持平铺结构，不额外增加“场景组”列
-- CSV 中的编号顺序应与 Markdown 按场景组展开后的顺序一致
 
 除非用户明确要求“段落式用例说明”，否则不建议把第二阶段默认格式改成段落叙述。
 
@@ -153,9 +147,7 @@ test-case-generator/
 ├── assets/
 │   ├── scene-template.md
 │   ├── test-case-template.md
-│   ├── test-case-template.csv
-│   ├── test-case-example.md
-│   └── test-case-example.csv
+│   └── test-case-example.md
 └── scripts/
     ├── validate_cases.py
     └── test_validate_cases.py
@@ -167,12 +159,8 @@ test-case-generator/
   第一阶段场景地图模板
 - `assets/test-case-template.md`
   第二阶段结构化测试用例 Markdown 模板
-- `assets/test-case-template.csv`
-  第二阶段表格版测试用例 CSV 模板
 - `assets/test-case-example.md`
   第二阶段结构化测试用例示例输出
-- `assets/test-case-example.csv`
-  与示例 Markdown 对齐的 CSV 输出
 
 ## 规则来源
 
@@ -228,8 +216,8 @@ test-case-generator/
 3. 再保存确认版场景地图文件
 4. 生成结构化测试用例 Markdown
 5. 用户确认第二阶段结果
-6. 同步保存 `结构化测试用例.md` 和中文列名的 `CSV`
-7. 运行校验脚本检查 Markdown 完整性，并确认配套 CSV 存在且字段一致
+6. 保存 `结构化测试用例.md`
+7. 运行校验脚本检查 Markdown 完整性
 8. 参考 `references/quality-rubric.md` 做一轮内容质量自查
 
 补充建议：
@@ -239,39 +227,18 @@ test-case-generator/
 - 若需求里明确列出多个可操作角色，第二阶段应至少为每个允许角色各给 1 条正向用例，并补 1 条无权限反向用例
 - 若需求里明确列出少量关键枚举值（如状态值），默认按 `1 个值至少 1 条用例` 展开；只有用户明确要求压缩时才合并
 
-### CSV 输出约定
-
-第二阶段 CSV 默认使用中文列名：
-
-- `编号`
-- `测试功能点`
-- `前置条件`
-- `测试步骤`
-- `预期结果`
-
-生成 CSV 时建议遵循：
-
-- 使用 UTF-8 编码
-- 正确转义逗号、引号和换行
-- `测试步骤`、`预期结果` 允许单元格内多行
-- 适合作为 Excel 或测试平台导入的表格版输出
-
 ## 验证方式
 
 对结构化测试用例 Markdown 文档运行：
 
 ```bash
-python scripts/validate_cases.py <测试用例文件路径> [CSV 文件路径]
+python scripts/validate_cases.py <测试用例文件路径>
 ```
 
 脚本会检查：
 
 - 是否包含关键字段
 - 是否包含综合场景或端到端场景
-- 是否存在配套 CSV 文件
-- CSV 列头、编号集合和顺序是否与 Markdown 一致
-
-如果不显式传入 CSV 路径，脚本默认会在同目录下先检查同名 `.csv`，并兼容检查 `<需求名称>_表格版用例.csv`。
 
 完成结构校验后，建议再参考 `references/quality-rubric.md` 做一轮轻量内容质量评审，重点检查：
 
@@ -284,7 +251,7 @@ python scripts/validate_cases.py <测试用例文件路径> [CSV 文件路径]
 
 如果下一步目标是“执行这些测试用例需要准备哪些数据”，建议在完成上述验证后继续搭配 `test-data-generator`：
 
-1. 先确认 `结构化测试用例.md` / `表格版用例.csv`
+1. 先确认 `结构化测试用例.md`
 2. 再提供技术方案 / 接口说明
 3. 再提供对应的 `reference-pack` 路径（通常位于 `reference-packs/...`，包含 `tables/*.sql` + `table_samples/*.csv`）
 4. 由 `test-data-generator` 保留 `结构化测试用例.md` 作为基线稿，并进一步输出按场景组分组、组内按 `TC` 展开的 `测试执行清单.md`
