@@ -46,8 +46,8 @@ source .venv/bin/activate
 # 验证结构化测试用例完整性
 python skills/test-case-generator/scripts/validate_cases.py <测试用例路径>
 
-# 验证测试数据设计完整性（可选同时校验 CSV 清单）
-python skills/test-data-generator/scripts/validate_test_data.py <测试数据设计路径> [测试数据清单路径]
+# 验证测试执行清单完整性
+python skills/test-data-generator/scripts/validate_test_data.py <测试执行清单路径>
 
 # 安装插件
 claude plugins marketplace add "changye01/skill_learn"

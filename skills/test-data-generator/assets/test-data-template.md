@@ -1,56 +1,92 @@
-# {{REQUIREMENT_NAME}} 测试数据清单
+# {{REQUIREMENT_NAME}} 测试执行清单
 
-> 主输入：已确认测试用例 + `reference-pack`
+> 基线稿：已确认的 `结构化测试用例.md`
+>
+> 主输入：`结构化测试用例.md` + `reference-pack`
 >
 > 补充输入：技术方案、接口说明、状态映射说明、历史修复 SQL（如有）
 >
-> 若存在派生字段、状态映射、历史修复、跨系统同步等规则而材料不足，应先提示“建议补充技术方案作为参考”，并将无法确认内容保留在 `待确认项`。候选版 Markdown 通过校验后，才可视为确认版。
+> 若存在派生字段、状态映射、历史修复、跨系统同步等规则而材料不足，应先提示“建议补充技术方案作为参考”，并将无法确认内容保留在对应 `TC` 的 `待确认项`。候选版 Markdown 通过校验后，才可视为确认版。
 
 ## 输入材料
 
-- 测试用例：`{{TEST_CASE_PATH}}`
+- 结构化测试用例：`{{TEST_CASE_PATH}}`
 - reference-pack：`{{REFERENCE_PACK_PATH}}`
 - 技术方案/接口说明：`{{TECH_DOC_PATH_OR_NONE}}`
 
-## 一、基础记录池
+## {{CASE_ID}} {{CASE_TITLE}}
 
-### {{POOL_ID}} {{POOL_NAME}}
+> `CASE_ID` 必须使用 `TC-xxx` 格式，例如 `TC-001`
 
-#### 表：`{{TABLE_NAME}}`
+### 前置条件
+
+- {{PRECONDITION_1}}
+- {{PRECONDITION_2}}
+
+### 测试步骤
+
+1. {{STEP_1}}
+2. {{STEP_2}}
+3. {{STEP_3}}
+
+### 预期结果
+
+- {{EXPECTED_RESULT_1}}
+- {{EXPECTED_RESULT_2}}
+
+### 测试数据
+
+#### 表：`{{TABLE_NAME_1}}`
 
 | {{FIELD_1}} | {{FIELD_2}} | {{FIELD_3}} |
 | --- | --- | --- |
 | {{VALUE_1}} | {{VALUE_2}} | {{VALUE_3}} |
 
-### {{POOL_ID_2}} {{POOL_NAME_2}}
+#### 表：`{{TABLE_NAME_2}}`
 
-#### 角色池 / 修复前 / 修复后 / 修改后预期（按需选一种）
+| {{COLUMN_1}} | {{COLUMN_2}} | {{COLUMN_3}} |
+| --- | --- | --- |
+| {{DATA_1}} | {{DATA_2}} | {{DATA_3}} |
 
-| {{COLUMN_1}} | {{COLUMN_2}} |
+### 说明
+
+- {{NOTE_1}}
+- {{NOTE_2}}
+
+### 待确认项
+
+- {{TODO_1_OR_无}}
+- {{TODO_2_OR_可删除}}
+
+## {{CASE_ID_2}} {{CASE_TITLE_2}}
+
+> `CASE_ID_2` 必须使用 `TC-xxx` 格式，例如 `TC-002`
+
+### 前置条件
+
+- {{PRECONDITION_A}}
+
+### 测试步骤
+
+1. {{STEP_A1}}
+2. {{STEP_A2}}
+
+### 预期结果
+
+- {{EXPECTED_A1}}
+
+### 测试数据
+
+#### 表：`{{TABLE_NAME_3}}`
+
+| {{FIELD_A1}} | {{FIELD_A2}} |
 | --- | --- |
-| {{VALUE_1}} | {{VALUE_2}} |
+| {{VALUE_A1}} | {{VALUE_A2}} |
 
-## 二、测试用例清单
+### 说明
 
-## {{CASE_ID}} {{CASE_TITLE}}
+- {{NOTE_A1}}
 
-### 引用基础记录
+### 待确认项
 
-- `{{POOL_ID}}` 中 `{{RECORD_KEY}}`
-- `{{POOL_ID_2}}` 中 `{{RECORD_KEY_2}}`
-
-### 补充说明（如无可删除）
-
-| 项目 | 值 |
-| --- | --- |
-| {{ITEM_NAME}} | {{ITEM_VALUE}} |
-
-### 验证点
-
-- {{ASSERTION_1}}
-- {{ASSERTION_2}}
-
-## 三、待确认项
-
-- 待确认项 1：
-- 待确认项 2：
+- 无

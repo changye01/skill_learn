@@ -1,12 +1,12 @@
 # Skill Learn
 
-实用 Claude Code Skills 集合，以单个 `skill-learn` 插件提供多个 Claude Skills，目前包含测试用例生成与测试数据设计两个 Skill。
+实用 Claude Code Skills 集合，以单个 `skill-learn` 插件提供多个 Claude Skills，目前包含测试用例生成与测试执行数据补齐两个 Skill。
 
 ## 插件安装与管理
 
 ### Claude Code Plugin Marketplace（推荐）
 
-在 Claude Code 中运行：
+安装插件
 
 ```bash
 claude plugins marketplace add "changye01/skill_learn"
@@ -51,14 +51,14 @@ claude plugins marketplace remove "skill-learn"
 
 ### `test-data-generator`
 
-测试数据设计工具，基于已确认测试用例与 `reference-pack` 设计测试数据清单，并校验 Markdown 结构完整性。
+测试数据设计工具，基于已确认测试用例与 `reference-pack` 生成 `测试执行清单.md`，并校验 Markdown 结构完整性。
 
-**触发方式：** 说“生成测试数据清单”、“补齐测试前置数据”、“根据测试用例设计测试数据”等
+**触发方式：** 说“生成测试执行清单”、“补齐测试前置数据”、“根据测试用例设计测试数据”等
 
 **功能：**
 
-- 优先收敛可复用基础记录池，减少重复准备
-- 输出测试数据清单草稿，区分基础数据、增量数据和待确认项
+- 保留 `结构化测试用例.md` 作为基线稿，再按 `TC` 补齐执行信息与测试数据
+- 输出 `测试执行清单.md` 草稿，按表分块展示测试数据并保留待确认项
 - 内置验证脚本检查 Markdown 结构完整性
 
 ## 使用示例
@@ -71,9 +71,35 @@ claude plugins marketplace remove "skill-learn"
 
 ### `test-data-generator`
 
-- “根据已确认测试用例生成测试数据清单”
+- “根据已确认测试用例生成测试执行清单”
 - “基于 reference-pack 设计测试前置数据”
-- “输出测试数据清单并校验 Markdown 结构是否完整”
+- “输出测试执行清单并校验 Markdown 结构是否完整”
+
+### 真实示例
+
+下面是一条真实会话里“先生成测试用例，再继续生成测试数据”的最小链路示例：
+```text
+在claude中执行 /Users/changye/changye_workspace/changye/skill_learn/example_data/2026-03-17=!【采购-订单模块】M4X订单管理：查询条件及列表字段调整、新增分配采购员功能/2026-03-17=!【采购-订单模块】M4X订单管理：查询条件及列表字段调整、新增分配采购员功能.md 生成测试用例
+```
+然后基于已确认的结构化测试用例，继续让 Claude 生成测试执行清单：
+
+```text
+根据 `M4X订单管理_结构化测试用例.md` 和 `reference-packs/` 生成测试执行清单
+```
+
+在这次会话里，完整产出流程是：
+
+1. `test-case-generator` 先读取需求文档，拆出查询条件、列表字段、分配采购员、历史数据修复、日志调整等测试对象
+2. 先生成 `M4X订单管理_测试场景地图.md` 草稿，并把“账号精确匹配”“订单状态枚举值”“采购员范围”“是否允许清空”等问题收敛到 `本次确认规则`
+3. 用户补充并确认规则后，再正式落地结构化测试用例和 CSV
+4. 随后 `test-data-generator` 基于 `M4X订单管理_结构化测试用例.md` 和 `reference-packs/` 继续补齐每条 `TC` 的测试数据、说明和待确认项，输出 `测试执行清单.md`
+
+最终在需求文档同目录产出了 4 个文件：
+
+- `M4X订单管理_测试场景地图.md`
+- `M4X订单管理_结构化测试用例.md`
+- `M4X订单管理_表格版用例.csv`
+- `M4X订单管理_测试执行清单.md`
 
 ---
 
@@ -88,7 +114,7 @@ skill_learn/
 │   │   ├── scripts/
 │   │   ├── references/
 │   │   └── assets/
-│   └── test-data-generator/     # 测试数据设计 Skill
+│   └── test-data-generator/     # 测试执行清单 Skill
 │       ├── SKILL.md
 │       ├── scripts/
 │       ├── references/

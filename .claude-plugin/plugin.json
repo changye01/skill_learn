@@ -1,7 +1,7 @@
 {
   "name": "skill-learn",
-  "description": "实用 Claude Code Skills 集合，提供测试用例生成与测试数据设计两个 Skill",
-  "version": "1.1.1",
+  "description": "实用 Claude Code Skills 集合，提供测试用例生成与测试执行清单生成两个 Skill",
+  "version": "1.1.2",
   "author": {
     "name": "changye01",
     "email": ""
@@ -14,9 +14,11 @@
     "testing",
     "test-case",
     "test-data",
+    "test-execution",
     "qa",
     "测试用例",
     "测试数据",
-    "测试设计"
+    "测试设计",
+    "测试执行清单"
   ]
 }
