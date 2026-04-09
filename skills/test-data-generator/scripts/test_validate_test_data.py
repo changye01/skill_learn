@@ -41,7 +41,7 @@ class TestValidExecutionChecklist:
 ### 预期结果
 - 返回目标订单
 
-### 测试数据
+### 输入数据
 
 #### 表：`supplier_order_m4x_task`
 
@@ -107,7 +107,7 @@ class TestMissingFields:
 ### 预期结果
 - 命中订单
 
-### 测试数据
+### 输入数据
 
 #### 表：`orders`
 
@@ -146,7 +146,7 @@ class TestMissingFields:
 - 无
 """
         result = validate(tmp_execution_plan(content))
-        assert any("测试数据" in issue for issue in result["issues"])
+        assert any("输入数据" in issue for issue in result["issues"])
 
     def test_missing_case_sections(self, tmp_execution_plan):
         content = """\
@@ -177,7 +177,7 @@ class TestMissingFields:
 ### 预期结果
 - 命中订单
 
-### 测试数据
+### 输入数据
 
 #### 表：`orders`
 
@@ -195,7 +195,37 @@ class TestMissingFields:
         assert result["has_cases"] is False
         assert any("标题" in issue for issue in result["issues"])
 
-    def test_rejects_when_test_data_has_no_table(self, tmp_execution_plan):
+    def test_rejects_when_input_data_has_no_table(self, tmp_execution_plan):
+        content = """\
+# 订单管理测试执行清单
+
+## TC-001 账号查询命中订单
+
+### 前置条件
+- 已存在订单
+
+### 测试步骤
+1. 输入账号
+
+### 预期结果
+- 命中订单
+
+### 输入数据
+
+#### 表：`orders`
+
+- 只有表标题，没有 Markdown 表格
+
+### 说明
+- 无
+
+### 待确认项
+- 无
+"""
+        result = validate(tmp_execution_plan(content))
+        assert any("Markdown 表格" in issue for issue in result["issues"])
+
+    def test_rejects_old_test_data_section_name(self, tmp_execution_plan):
         content = """\
 # 订单管理测试执行清单
 
@@ -214,7 +244,9 @@ class TestMissingFields:
 
 #### 表：`orders`
 
-- 只有表标题，没有 Markdown 表格
+| orders_code |
+| --- |
+| ORD-001 |
 
 ### 说明
 - 无
@@ -223,7 +255,7 @@ class TestMissingFields:
 - 无
 """
         result = validate(tmp_execution_plan(content))
-        assert any("Markdown 表格" in issue for issue in result["issues"])
+        assert any("输入数据" in issue for issue in result["issues"])
 
 
 class TestFileErrors:

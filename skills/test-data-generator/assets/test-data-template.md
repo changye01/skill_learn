@@ -36,7 +36,7 @@
 - {{EXPECTED_RESULT_1}}
 - {{EXPECTED_RESULT_2}}
 
-### 测试数据
+### 输入数据
 
 #### 表：`{{TABLE_NAME_1}}`
 
@@ -81,7 +81,7 @@
 
 - {{EXPECTED_A1}}
 
-### 测试数据
+### 输入数据
 
 #### 表：`{{TABLE_NAME_3}}`
 

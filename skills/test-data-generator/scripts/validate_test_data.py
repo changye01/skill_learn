@@ -9,7 +9,7 @@ CASE_REQUIRED_SECTIONS = [
     "前置条件",
     "测试步骤",
     "预期结果",
-    "测试数据",
+    "输入数据",
     "说明",
     "待确认项",
 ]
@@ -49,11 +49,11 @@ def _validate_execution_checklist(content: str, issues: list[str]) -> bool:
             if f"### {section}" not in block:
                 issues.append(f"{case_id} 缺少“{section}”小节")
 
-        test_data_section = _extract_section(block, "测试数据")
-        if test_data_section and "#### 表：" not in test_data_section:
-            issues.append(f"{case_id} 的“测试数据”小节缺少按表分块内容")
-        elif test_data_section:
-            _validate_table_blocks(case_id, test_data_section, issues)
+        input_data_section = _extract_section(block, "输入数据")
+        if input_data_section and "#### 表：" not in input_data_section:
+            issues.append(f"{case_id} 的“输入数据”小节缺少按表分块内容")
+        elif input_data_section:
+            _validate_table_blocks(case_id, input_data_section, issues)
 
     return has_cases
 
@@ -70,17 +70,17 @@ def _extract_section(block: str, section_name: str) -> str:
     return block[start:end]
 
 
-def _validate_table_blocks(case_id: str, test_data_section: str, issues: list[str]) -> None:
-    table_headers = list(re.finditer(r"^####\s+表：.+$", test_data_section, flags=re.MULTILINE))
+def _validate_table_blocks(case_id: str, input_data_section: str, issues: list[str]) -> None:
+    table_headers = list(re.finditer(r"^####\s+表：.+$", input_data_section, flags=re.MULTILINE))
 
     for index, header in enumerate(table_headers):
         start = header.end()
-        end = table_headers[index + 1].start() if index + 1 < len(table_headers) else len(test_data_section)
-        block = test_data_section[start:end]
+        end = table_headers[index + 1].start() if index + 1 < len(table_headers) else len(input_data_section)
+        block = input_data_section[start:end]
         table_lines = [line.strip() for line in block.splitlines() if line.strip().startswith("|")]
 
         if len(table_lines) < 3 or not _is_markdown_separator(table_lines[1]):
-            issues.append(f"{case_id} 的“测试数据”小节中，{header.group(0)} 后缺少有效 Markdown 表格")
+            issues.append(f"{case_id} 的“输入数据”小节中，{header.group(0)} 后缺少有效 Markdown 表格")
 
 
 def _is_markdown_separator(line: str) -> bool:
