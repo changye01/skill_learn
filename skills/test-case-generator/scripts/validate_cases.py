@@ -30,30 +30,70 @@ def _read_markdown(filepath: str) -> str:
 
 
 def _extract_markdown_case_ids(content: str) -> list[str]:
-    case_ids = []
+    return [row["编号"] for row in _extract_markdown_case_rows(content)]
 
-    for line in content.splitlines():
-        stripped = line.strip()
-        if not stripped.startswith("|"):
-            continue
-        if "---" in stripped:
+
+def _parse_markdown_cells(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
+
+
+def _is_markdown_separator(line: str) -> bool:
+    cells = _parse_markdown_cells(line)
+    return bool(cells) and all(cell and set(cell) <= {":", "-"} for cell in cells)
+
+
+def _extract_markdown_case_rows(content: str) -> list[dict[str, str]]:
+    rows = []
+    lines = content.splitlines()
+    index = 0
+
+    while index < len(lines):
+        line = lines[index].strip()
+        if _parse_markdown_cells(line) != REQUIRED_KEYWORDS:
+            index += 1
             continue
 
-        cells = [cell.strip() for cell in stripped.strip("|").split("|")]
-        if not cells or cells[0] in {"编号", "{{CASE_ID}}", ""}:
+        if index + 1 >= len(lines) or not _is_markdown_separator(lines[index + 1].strip()):
+            index += 1
             continue
-        case_ids.append(cells[0])
 
-    return case_ids
+        index += 2
+        while index < len(lines):
+            stripped = lines[index].strip()
+            if not stripped.startswith("|"):
+                break
+
+            cells = _parse_markdown_cells(stripped)
+            if len(cells) != len(REQUIRED_KEYWORDS):
+                break
+
+            if cells[0] not in {"编号", "{{CASE_ID}}", ""}:
+                rows.append(dict(zip(REQUIRED_KEYWORDS, cells, strict=False)))
+            index += 1
+
+    return rows
+
+
+def _candidate_csv_paths(markdown_path: str) -> list[Path]:
+    path = Path(markdown_path)
+    candidates = [path.with_suffix(".csv")]
+
+    if "结构化测试用例" in path.stem:
+        alt_name = f"{path.stem.replace('结构化测试用例', '表格版用例')}.csv"
+        alt_path = path.with_name(alt_name)
+        if alt_path not in candidates:
+            candidates.append(alt_path)
+
+    return candidates
 
 
 def _resolve_csv_path(markdown_path: str, csv_path: str | None) -> str | None:
     if csv_path:
         return csv_path
 
-    inferred = Path(markdown_path).with_suffix(".csv")
-    if inferred.exists():
-        return str(inferred)
+    for candidate in _candidate_csv_paths(markdown_path):
+        if candidate.exists():
+            return str(candidate)
 
     return None
 
@@ -78,15 +118,22 @@ def validate(filepath: str, csv_filepath: str | None = None) -> dict:
         if keyword not in content:
             issues.append(f"缺少必填字段：{keyword}")
 
-    markdown_case_ids = _extract_markdown_case_ids(content)
-    has_e2e = any(keyword in content for keyword in E2E_KEYWORDS)
+    markdown_case_rows = _extract_markdown_case_rows(content)
+    markdown_case_ids = [row["编号"] for row in markdown_case_rows]
+    has_e2e = any(
+        any(keyword in row["测试功能点"] for keyword in E2E_KEYWORDS)
+        for row in markdown_case_rows
+    )
     if not has_e2e:
         issues.append("缺少综合场景或端到端场景")
 
     resolved_csv = _resolve_csv_path(filepath, csv_filepath)
     has_matching_csv = False
 
-    if resolved_csv:
+    if not resolved_csv:
+        candidates = " / ".join(str(path) for path in _candidate_csv_paths(filepath))
+        issues.append(f"缺少配套 CSV 文件：{candidates}")
+    else:
         csv_headers, csv_rows = _read_csv_rows(resolved_csv)
         if not csv_headers and not csv_rows:
             issues.append(f"CSV 文件不存在：{resolved_csv}")
@@ -114,7 +161,7 @@ def validate(filepath: str, csv_filepath: str | None = None) -> dict:
 def main():
     if len(sys.argv) not in {2, 3}:
         print("用法: python validate_cases.py <测试用例文件路径> [CSV 文件路径]")
-        print("示例: python validate_cases.py cases.md")
+        print("示例: python validate_cases.py cases.md  # 默认检查同名 .csv，并兼容 <需求名称>_表格版用例.csv")
         print("示例: python validate_cases.py cases.md cases.csv")
         sys.exit(1)
 

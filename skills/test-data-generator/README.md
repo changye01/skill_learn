@@ -52,7 +52,7 @@
 2. 判断是否存在派生字段、状态映射、历史修复、跨系统链路、权限或日志规则。
 3. 若有上述复杂规则但缺少技术方案，应明确提示当前无法给出高置信度执行数据设计。
 4. 逐条继承基线用例中的 `TC / 前置条件 / 步骤 / 预期`。
-5. 先读技术方案，再读 `tables/*.sql` 和 `table_samples/*.csv`，定位每条用例所需的表、字段和值形态。
+5. 先读技术方案，再读 `reference-pack` 路径（通常位于 `reference-packs/...`）下的 `tables/*.sql` 和 `table_samples/*.csv`，定位每条用例所需的表、字段和值形态。
 6. 输出 Markdown `测试执行清单` 草稿。
 7. 根据覆盖清单补漏，并把无法确认的信息留在对应 `TC` 的 `待确认项`。
 8. 用户确认草稿方向后保存候选版 Markdown。
@@ -66,9 +66,9 @@
 
 1. 已确认的 `结构化测试用例.md`
 2. 技术方案
-3. `reference-pack`
-   - `reference-packs/tables/*.sql`
-   - `reference-packs/table_samples/*.csv`
+3. `reference-pack` 路径（通常位于 `reference-packs/...`）
+   - `tables/*.sql`
+   - `table_samples/*.csv`
 
 ### 补充输入
 

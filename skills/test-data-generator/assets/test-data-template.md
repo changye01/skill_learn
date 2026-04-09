@@ -2,7 +2,7 @@
 
 > 基线稿：已确认的 `结构化测试用例.md`
 >
-> 主输入：`结构化测试用例.md` + `reference-pack`
+> 主输入：`结构化测试用例.md` + `reference-pack`（通常位于 `reference-packs/...`）
 >
 > 核心输入：技术方案
 >
