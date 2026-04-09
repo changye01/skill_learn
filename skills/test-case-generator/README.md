@@ -191,23 +191,22 @@ test-case-generator/
 - `docx` 可用，但复杂排版、表格和批注可能影响解析质量。
 - `pdf` 可直接使用，但容易出现换行错乱、表格断裂、页眉页脚混入正文等问题。
 
-### docx 转 Markdown
+### 飞书文档转 Markdown
 
-如果输入是 `Word (.docx)`，推荐先用 `pandoc` 转成 `Markdown` 再交给本 Skill：
+如果原始需求在飞书文档中，推荐使用 Chrome 浏览器里的 `Cloud Document Converter` 将飞书文档转换成 `Markdown`，再交给本 Skill。
 
-```bash
-cd "/Users/changye/changye_workspace/changye/skill_learn/example_data"
-pandoc "2026-03-17=_【采购-订单模块】M4X订单管理：查询条件及列表字段调整、新增分配采购员功能.docx" \
-  -t gfm \
-  --extract-media=. \
-  -o "需求提取_26668.md"
-```
+推荐步骤：
+
+1. 在 Chrome 中打开飞书需求文档
+2. 使用 `Cloud Document Converter` 将当前飞书文档转换为 `Markdown`
+3. 将转换结果保存为本地 `.md` 文件，例如 `需求提取_26668.md`
+4. 把这份 `Markdown` 文件作为输入交给本 Skill
 
 说明：
 
-- `-t gfm` 会输出更适合 Markdown 工作流的格式。
-- `--extract-media=.` 会把文档中的图片抽取到当前目录下的 `media/` 子目录，并在 Markdown 中保留相对引用。
-- 转换完成后，建议人工检查标题层级、表格、编号和图片路径是否正常。
+- 这种方式更贴合当前“飞书文档 -> Markdown -> Skill”的实际使用路径。
+- 转换完成后，仍建议人工检查标题层级、表格、编号、代码块和图片链接是否正常。
+- 如果飞书原文里有复杂表格、嵌套列表或大量截图，建议在交给 Skill 前先做一次轻量清洗。
 
 建议输入顺序：
 
