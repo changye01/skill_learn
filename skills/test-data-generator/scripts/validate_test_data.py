@@ -16,6 +16,7 @@ DETAIL_REQUIRED_SECTIONS = [
     "待确认项",
 ]
 CASE_TABLE_HEADERS = ["编号", "测试功能点", "前置条件", "测试步骤", "预期结果"]
+TABLE_BLOCK_PATTERN = re.compile(r"(^#{1,6}\s+表：.+$|^\*\*表：.+\*\*$)", flags=re.MULTILINE)
 
 TITLE_PATTERN = re.compile(r"^#\s+.*测试执行清单\s*$", flags=re.MULTILINE)
 HEADING_PATTERN = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
@@ -120,7 +121,10 @@ def _extract_section(block: str, section_name: str, case_level: int) -> str:
 
 
 def _validate_table_blocks(case_id: str, input_data_section: str, issues: list[str]) -> None:
-    table_headers = list(re.finditer(r"^#{1,6}\s+表：.+$", input_data_section, flags=re.MULTILINE))
+    table_headers = list(TABLE_BLOCK_PATTERN.finditer(input_data_section))
+    if not table_headers:
+        issues.append(f"{case_id} 的“输入数据”小节缺少规范的表分块标识")
+        return
 
     for index, header in enumerate(table_headers):
         start = header.end()

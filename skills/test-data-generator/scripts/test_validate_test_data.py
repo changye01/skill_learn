@@ -192,13 +192,13 @@ class TestValidExecutionChecklist:
 
 #### 输入数据
 
-##### 表：`supplier_order_m4x_task`
+**表：`supplier_order_m4x_task`**
 
 | trade_order_code | purchase_site_id |
 | --- | --- |
 | ORD-001 | acct_001 |
 
-##### 表：`orders`
+**表：`orders`**
 
 | orders_code | site_id | orders_status |
 | --- | --- | --- |
@@ -369,6 +369,33 @@ class TestMissingFields:
 - 无
 
 ### 待确认项
+- 无
+"""
+        result = validate(tmp_execution_plan(content))
+        assert any("Markdown 表格" in issue for issue in result["issues"])
+
+    def test_rejects_when_bold_table_label_has_no_table(self, tmp_execution_plan):
+        content = """\
+# 订单管理测试执行清单
+
+## 场景组1：账号查询条件
+
+### TC-001 账号查询命中订单
+
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 账号查询命中订单 | 已存在订单 | 1. 输入账号 | 命中订单 |
+
+#### 输入数据
+
+**表：`orders`**
+
+- 只有表标签，没有 Markdown 表格
+
+#### 说明
+- 无
+
+#### 待确认项
 - 无
 """
         result = validate(tmp_execution_plan(content))
