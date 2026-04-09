@@ -5,14 +5,17 @@ import re
 import sys
 
 
-CASE_REQUIRED_SECTIONS = [
+LEGACY_CASE_REQUIRED_SECTIONS = [
     "前置条件",
     "测试步骤",
     "预期结果",
+]
+DETAIL_REQUIRED_SECTIONS = [
     "输入数据",
     "说明",
     "待确认项",
 ]
+CASE_TABLE_HEADERS = ["编号", "测试功能点", "前置条件", "测试步骤", "预期结果"]
 
 TITLE_PATTERN = re.compile(r"^#\s+.*测试执行清单\s*$", flags=re.MULTILINE)
 HEADING_PATTERN = re.compile(r"^(#{1,6})\s+(.*?)\s*$")
@@ -70,9 +73,16 @@ def _validate_execution_checklist(content: str, issues: list[str]) -> bool:
         return has_cases
 
     for case_id, case_level, block in case_blocks:
-        for section in CASE_REQUIRED_SECTIONS:
+        has_case_table = _has_case_table(block, case_id)
+
+        for section in DETAIL_REQUIRED_SECTIONS:
             if not _extract_section(block, section, case_level):
                 issues.append(f"{case_id} 缺少“{section}”小节")
+
+        if not has_case_table:
+            for section in LEGACY_CASE_REQUIRED_SECTIONS:
+                if not _extract_section(block, section, case_level):
+                    issues.append(f"{case_id} 缺少“{section}”小节")
 
         input_data_section = _extract_section(block, "输入数据", case_level)
         if input_data_section:
@@ -120,6 +130,51 @@ def _validate_table_blocks(case_id: str, input_data_section: str, issues: list[s
 
         if len(table_lines) < 3 or not _is_markdown_separator(table_lines[1]):
             issues.append(f"{case_id} 的“输入数据”小节中，{header.group(0)} 后缺少有效 Markdown 表格")
+
+
+def _has_case_table(block: str, case_id: str) -> bool:
+    table = _extract_case_table(block)
+    if not table:
+        return False
+
+    headers, rows = table
+    if headers != CASE_TABLE_HEADERS:
+        return False
+
+    first_row_case_id = rows[0][0].strip()
+    return first_row_case_id == case_id
+
+
+def _extract_case_table(block: str) -> tuple[list[str], list[list[str]]] | None:
+    lines = [line.rstrip() for line in block.splitlines()]
+
+    for index in range(len(lines) - 2):
+        header_line = lines[index].strip()
+        separator_line = lines[index + 1].strip()
+        row_line = lines[index + 2].strip()
+
+        if not (header_line.startswith("|") and separator_line.startswith("|") and row_line.startswith("|")):
+            continue
+
+        headers = _split_markdown_row(header_line)
+        if headers != CASE_TABLE_HEADERS or not _is_markdown_separator(separator_line):
+            continue
+
+        rows: list[list[str]] = []
+        for row_index in range(index + 2, len(lines)):
+            current_line = lines[row_index].strip()
+            if not current_line.startswith("|"):
+                break
+            rows.append(_split_markdown_row(current_line))
+
+        if rows:
+            return headers, rows
+
+    return None
+
+
+def _split_markdown_row(line: str) -> list[str]:
+    return [cell.strip() for cell in line.strip().strip("|").split("|")]
 
 
 def _is_markdown_separator(line: str) -> bool:

@@ -173,6 +173,47 @@ class TestValidExecutionChecklist:
         assert result["issues"] == []
         assert result["has_cases"] is True
 
+    def test_valid_execution_checklist_with_case_table(self, tmp_execution_plan):
+        content = """\
+# 订单管理测试执行清单
+
+## 输入材料
+
+- 结构化测试用例：`cases.md`
+- reference-pack：`reference-packs/`
+
+## 场景组1：账号查询条件
+
+### TC-001 账号查询命中订单
+
+| 编号 | 测试功能点 | 前置条件 | 测试步骤 | 预期结果 |
+| --- | --- | --- | --- | --- |
+| TC-001 | 账号查询命中订单 | 已存在账号为 `acct_001` 的订单 | 1. 输入账号 `acct_001`<br>2. 点击查询 | 返回目标订单 |
+
+#### 输入数据
+
+##### 表：`supplier_order_m4x_task`
+
+| trade_order_code | purchase_site_id |
+| --- | --- |
+| ORD-001 | acct_001 |
+
+##### 表：`orders`
+
+| orders_code | site_id | orders_status |
+| --- | --- | --- |
+| ORD-001 | acct_001 | OP |
+
+#### 说明
+- `supplier_order_m4x_task.trade_order_code = orders.orders_code`
+
+#### 待确认项
+- 无
+"""
+        result = validate(tmp_execution_plan(content))
+        assert result["issues"] == []
+        assert result["has_cases"] is True
+
 
 class TestMissingFields:
     def test_old_data_checklist_format_is_rejected(self, tmp_execution_plan):
