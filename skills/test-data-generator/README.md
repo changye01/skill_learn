@@ -51,8 +51,9 @@
 1. 已确认的 `结构化测试用例`
 2. 技术方案
 3. `reference-pack` 路径
-   - `tables/*.sql`
-   - `table_samples/*.csv`
+  - `tables/*.sql`
+  - `table_samples/*.csv`
+  - 如果是全库级 pack，建议同时提供 `table_index.csv`
 
 补充输入：
 
@@ -85,6 +86,14 @@
 - `assets/test-execution-example.md`
 
 其中 `table_samples/*.csv` 主要用来参考字段形态、取值风格和常见组合，不建议整张照抄进执行清单。
+
+如果 `reference-pack` 是全库导出、包含很多表，推荐使用下面的读取约束：
+
+- 先读技术方案，再读 `table_index.csv`，先按业务词、表名、表注释和关键字段缩圈
+- 默认把全库 pack 当作“候选库”，不是默认整包通读的输入
+- 首轮通常只展开 `3-10` 张候选表的 `tables/*.sql` 与 `table_samples/*.csv`
+- 如果候选表仍然很多，应该先回到需求范围、接口字段或业务关键词继续收敛
+- 输出测试执行清单时，建议显式说明“本次选了哪些表、为什么选它们”
 
 ## 验证方式
 
@@ -120,3 +129,4 @@ python scripts/validate_test_data.py <Markdown文件路径>
 - 示例：`assets/test-execution-example.md`
 - 校验脚本：`scripts/validate_test_data.py`
 - 校验脚本测试：`scripts/test_validate_test_data.py`
+
