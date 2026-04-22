@@ -1,8 +1,7 @@
 ---
-
-## name: test-case-generator
+name: test-case-generator
 description: Use when 需要根据需求文档、接口说明、原型或已有用例生成测试场景和结构化测试用例，尤其适用于“生成测试用例”“需求转测试用例”“测试场景梳理”“补齐测试覆盖”等请求。
-
+---
 # 测试用例生成器
 
 ## 工作流程
