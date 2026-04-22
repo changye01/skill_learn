@@ -1,7 +1,7 @@
 {
   "name": "skill-learn",
   "description": "实用 Claude Code Skills 集合，提供测试用例生成与测试执行清单生成两个 Skill",
-  "version": "1.1.5",
+  "version": "1.1.6",
   "author": {
     "name": "changye01",
     "email": ""
